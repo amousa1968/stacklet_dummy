@@ -52,3 +52,32 @@ policies:
             has_inline_policy or
             has_role_attachment
           )
+
+#policies:
+  - name: forbid-non-authorized-iam-admin-create-role
+    resource: terraform.aws_iam_role
+    description: >
+      Forbid non-authorized IAM users with admin permissions from creating IAM roles.
+    mode:
+      type: terraform-plan
+    filters:
+      - type: value
+        key: tags.Creator
+        op: not-in
+        value:
+          - authorized-admin-1
+          - authorized-admin-2
+      - type: value
+        key: assume_role_policy_document.Statement[?Effect=='Allow' && contains(Action, 'sts:AssumeRole')].Principal.AWS
+        op: not-in
+        value:
+          - ""
+          - null
+    actions:
+      - type: webhook
+        to:
+          - security-team@example.com
+        subject: "Unauthorized IAM Admin User Tried to Create IAM Role"
+        template: default
+
+
