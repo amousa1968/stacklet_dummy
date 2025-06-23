@@ -1,0 +1,54 @@
+policies:
+  - name: forbid-iam-user-creation
+    description: |
+      Forbids the creation of new IAM users in AWS.
+    resource: terraform.aws_iam_user
+    filters:
+      - name: present
+    actions:
+      - type: webhook # You could also use a different action like "deny"
+
+
+  - name: forbid-iam-user-violation
+    description: "Forbid the creation of aws_iam_user resources"
+    resource: terraform.aws_iam_user
+    filters:
+      - type: value
+        key: 'resource_type'
+        value: 'aws_iam_user'
+    # Optional: Add an action to report the violation
+    # actions:
+    #   - type: notify
+    #     to: 
+    #       - email@example.com 
+    #     subject: "IAM User Creation Forbidden"
+    #     body: "The creation of IAM user resources is forbidden. Found in: {resource.id}"
+
+
+# #policies:
+  # - name: check-iam-user-path
+    # resource: terraform.aws_iam_user
+    # filters:
+      # - path: "/system/"  # Filter for users in the "/system/" path
+    # actions:
+      # - type: webhook
+
+#policies:
+  - name: forbid-iam-user-without-permissions
+    resource: terraform.aws_iam_user
+    description: |
+      Forbid creation of AWS IAM users without attached permissions (policies or roles) using Terraform aws_iam_user.
+    mode:
+      type: left
+    filters:
+      - type: value
+        key: "resource_type == 'aws_iam_user' && !has_attached_policy && !has_inline_policy && !has_role_attachment"
+        value: true
+        policy: deny
+        expr: |
+          resource_type == "aws_iam_user" and
+          not (
+            has_attached_policy or
+            has_inline_policy or
+            has_role_attachment
+          )

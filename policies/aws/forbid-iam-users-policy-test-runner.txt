@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script to run thorough tests for forbid-iam-users policy using c7n-left on the entire Terraform test directory
+
+POLICY_DIR="terraform/stacklet/policies/aws"
+TEST_DIR="terraform/stacklet/policies/aws/tests/forbid-iam-user-deployment"
+
+# Convert TEST_DIR to absolute path
+ABS_TEST_DIR=$(cd "$TEST_DIR" && pwd)
+
+echo "Running policy tests for policies in $POLICY_DIR on Terraform directory $ABS_TEST_DIR"
+
+# Run c7n-left once on the entire test directory
+c7n-left run --policy-dir "$POLICY_DIR" --directory "$ABS_TEST_DIR"
+if [ $? -ne 0 ]; then
+  echo "Test failed for Terraform directory $ABS_TEST_DIR"
+else
+  echo "Test passed for Terraform directory $ABS_TEST_DIR"
+fi
+
+echo "All tests completed."
