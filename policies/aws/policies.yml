@@ -8,7 +8,7 @@ policies:
     actions:
       - type: webhook # You could also use a different action like "deny"
 
-
+#option 1
   - name: forbid-iam-user-violation
     description: "Forbid the creation of aws_iam_user resources"
     resource: terraform.aws_iam_user
@@ -24,35 +24,7 @@ policies:
     #     subject: "IAM User Creation Forbidden"
     #     body: "The creation of IAM user resources is forbidden. Found in: {resource.id}"
 
-
-# #policies:
-  # - name: check-iam-user-path
-    # resource: terraform.aws_iam_user
-    # filters:
-      # - path: "/system/"  # Filter for users in the "/system/" path
-    # actions:
-      # - type: webhook
-
-#policies:
-  - name: forbid-iam-user-without-permissions
-    resource: terraform.aws_iam_user
-    description: |
-      Forbid creation of AWS IAM users without attached permissions (policies or roles) using Terraform aws_iam_user.
-    mode:
-      type: left
-    filters:
-      - type: value
-        key: "resource_type == 'aws_iam_user' && !has_attached_policy && !has_inline_policy && !has_role_attachment"
-        value: true
-        policy: deny
-        expr: |
-          resource_type == "aws_iam_user" and
-          not (
-            has_attached_policy or
-            has_inline_policy or
-            has_role_attachment
-          )
-
+#option 2
 #policies:
   - name: forbid-non-authorized-iam-admin-create-role
     resource: terraform.aws_iam_role
@@ -80,4 +52,27 @@ policies:
         subject: "Unauthorized IAM Admin User Tried to Create IAM Role"
         template: default
 
+#option 3
+#policies:
+  - name: forbid-iam-user-without-permissions
+    resource: terraform.aws_iam_user
+    description: |
+      Forbid creation of AWS IAM users without approved tag.
+    filters:
+      - type: value
+        key: tags.approved
+        op: ne
+        value: "true"
 
+
+
+#option 3
+# #policies:
+  # - name: check-iam-user-path
+    # resource: terraform.aws_iam_user
+    # filters:
+      # - path: "/system/"  # Filter for users in the "/system/" path
+    # actions:
+      # - type: webhook
+
+#option 4
