@@ -5,9 +5,16 @@ policies:
       Forbids the creation of new IAM users in AWS.
     resource: terraform.aws_iam_user
     filters:
+      - type: value
+        key: name
+        op: not-in
+        value:
+          - "*not_in_exception_file"
+          - "*not_in_exception_file1"
       - name: present
     actions:
       - type: webhook # You could also use a different action like "deny"
+
 
 #option 2
 #policies:
