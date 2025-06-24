@@ -68,10 +68,20 @@ policies:
 #policies:
   - name: check-iam-user-path
     resource: terraform.aws_iam_user
-    description: "Check that AWS IAM users are created under the /service/ path."
+    description: "Check that AWS IAM users are created under the /service/ path unless in exception list."
     filters:
       - type: value
         key: path
         op: ne
         value: "/service/"
+      - type: value
+        key: name
+        op: not-in
+        value:
+          - "exception-file"
+          - "*not_in_exception_file"
+
+    metadata:
+       category: iam
+       severity: high  
         
