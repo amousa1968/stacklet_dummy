@@ -75,6 +75,12 @@ policies:
         key: tags.approved
         op: ne
         value: "true"
+      - type: value
+        key: name
+        op: not-in
+        value:
+          - "exception-user1"
+          - "exception-user2"
 
 #option 5
 #policies:
