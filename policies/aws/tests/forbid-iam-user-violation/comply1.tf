@@ -1,3 +1,3 @@
-resource "aws_iam_user" "comply1" {
-  name = "comply1"
+resource "aws_s3_bucket" "compliant_bucket" {
+  bucket = "compliant-bucket-example"
 }

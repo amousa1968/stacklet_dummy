@@ -1,4 +1,3 @@
-resource "aws_iam_user" "noncomply1" {
-  name = "unwanted-user"
-  path = "/system/"
+resource "aws_iam_user" "noncompliant_user" {
+  name = "noncompliant-user"
 }
