@@ -103,4 +103,33 @@ policies:
        category: iam
        severity: high       
 
+#option 6
+#policies:
+  - name: forbid-ec2-instance-create
+    resource: terraform.aws_instance
+    description: |
+      Forbid creating EC2 instances via Terraform.
+      Also flags EC2 with IAM roles that have AdministratorAccess.
+    filters:
+      - or:
+          - type: value
+            key: iam_instance_profile.roles[].managed_policy_arns[]
+            op: contains
+            value: "arn:aws:iam::aws:policy/AdministratorAccess"
+          - type: value
+            key: instance_type
+            op: ne
+            value: ""  # Any EC2 instance will match (or omit this filter entirely)
+    actions:
+      - type: webhook
+        template: default
+        subject: "EC2 Instance Creation Detected"
+        to:
+          - security-team@example.com
+        transport:
+          type: debug
+
+    metadata:
+       category: iam
+       severity: high
 
