@@ -21,15 +21,20 @@ policies:
   - name: forbid-iam-user-violation
     resource: terraform.aws_iam_user
     description: "Forbid the creation of aws_iam_user resources"
-    filters: []
+    filters:
+      - type: value
+        key: name
+        op: not-in
+        value:
+          - "*not_in_exception_file"
+
     actions:
       - type: webhook
         to:
           - security-team@example.com
         subject: "IAM User Creation Detected"
-        body: "The creation of IAM user resources is forbidden. Found in: {resource.id}" 
+        body: "The creation of IAM user resources is forbidden. Found in: {resource.id}"
         template: default
-                       
 
 #option 3
 #policies:
@@ -90,5 +95,6 @@ policies:
 
     metadata:
        category: iam
-       severity: high  
-        
+       severity: high       
+
+
