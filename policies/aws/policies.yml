@@ -1,3 +1,4 @@
+#option 1
 policies:
   - name: forbid-iam-user-creation
     description: |
@@ -8,23 +9,22 @@ policies:
     actions:
       - type: webhook # You could also use a different action like "deny"
 
-#option 1
-  - name: forbid-iam-user-violation
-    description: "Forbid the creation of aws_iam_user resources"
-    resource: terraform.aws_iam_user
-    filters:
-      - type: value
-        key: 'resource_type'
-        value: 'aws_iam_user'
-    # Optional: Add an action to report the violation
-    # actions:
-    #   - type: notify
-    #     to: 
-    #       - email@example.com 
-    #     subject: "IAM User Creation Forbidden"
-    #     body: "The creation of IAM user resources is forbidden. Found in: {resource.id}"
-
 #option 2
+#policies:
+  - name: forbid-iam-user-violation
+    resource: terraform.aws_iam_user
+    description: "Forbid the creation of aws_iam_user resources"
+    filters: []
+    actions:
+      - type: webhook
+        to:
+          - security-team@example.com
+        subject: "IAM User Creation Detected"
+        body: "The creation of IAM user resources is forbidden. Found in: {resource.id}" 
+        template: default
+                       
+
+#option 3
 #policies:
   - name: forbid-non-authorized-iam-admin-create-role
     resource: terraform.aws_iam_role
@@ -52,7 +52,7 @@ policies:
         subject: "Unauthorized IAM Admin User Tried to Create IAM Role"
         template: default
 
-#option 3
+#option 4
 #policies:
   - name: forbid-iam-user-without-permissions
     resource: terraform.aws_iam_user
@@ -64,15 +64,14 @@ policies:
         op: ne
         value: "true"
 
-
-
-#option 3
-# #policies:
-  # - name: check-iam-user-path
-    # resource: terraform.aws_iam_user
-    # filters:
-      # - path: "/system/"  # Filter for users in the "/system/" path
-    # actions:
-      # - type: webhook
-
-#option 4
+#option 5
+#policies:
+  - name: check-iam-user-path
+    resource: terraform.aws_iam_user
+    description: "Check that AWS IAM users are created under the /service/ path."
+    filters:
+      - type: value
+        key: path
+        op: ne
+        value: "/service/"
+        
