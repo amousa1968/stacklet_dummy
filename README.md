@@ -18,5 +18,9 @@ Success forbid-non-authorized-iam-admin-create-role - 1 checks
 ```
 
 <img width="477" alt="image" src="https://github.com/user-attachments/assets/0a4233db-b77d-49d5-8119-dbebe259b313" />
+
+
+<img width="646" alt="image" src="https://github.com/user-attachments/assets/dd0e0f47-fa3b-4649-a7e8-bdb901d0a048" />
+
 <img width="477" alt="image" src="https://github.com/user-attachments/assets/0a4233db-b77d-49d5-8119-dbebe259b313" />
 
